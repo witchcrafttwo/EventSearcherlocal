@@ -101,4 +101,8 @@ export type Env = {
   VAPID_SUBJECT?: string;
   ADMIN_TOKEN?: string; // secret。管理系API(/admin/*, /sources*)の認証トークン
   CRON_SECRET?: string; // Vercel Cron 用。設定すると /cron/ingest が Bearer 一致を要求
+  // --- データストア ---
+  DB_DRIVER?: string; // "dynamo" で DynamoDB、未指定/その他で PostgreSQL
+  DATABASE_URL?: string; // PostgreSQL 接続文字列。例: postgres://user:pass@localhost:5432/events
+  DB_SSL?: string; // "true" で SSL 接続（マネージドPG等）
 };

@@ -1,5 +1,5 @@
 import { sha256Hex } from "./crypto.js";
-import { DynamoClient } from "./dynamo.js";
+import { getDb } from "./db.js";
 import { defaultSources, type DefaultSource } from "./default-sources.js";
 import type { Env, EventSourceConfig } from "./types.js";
 
@@ -8,7 +8,7 @@ type FileSource = DefaultSource;
 /** DynamoDBに保存された情報源URLの管理 */
 
 export async function listSources(env: Env): Promise<EventSourceConfig[]> {
-  const ddb = new DynamoClient(env);
+  const ddb = getDb(env);
   return ddb.scanAll<EventSourceConfig>(env.SOURCES_TABLE);
 }
 
@@ -28,7 +28,7 @@ export async function addSource(
     enabled: true
   };
 
-  const ddb = new DynamoClient(env);
+  const ddb = getDb(env);
   await ddb.putItem(env.SOURCES_TABLE, source);
   return source;
 }
@@ -45,7 +45,7 @@ export async function updateSource(
   patch: { enabled?: boolean; forceCategory?: string; showImages?: boolean; note?: string }
 ): Promise<EventSourceConfig> {
   if (!id) throw new Error("id is required");
-  const ddb = new DynamoClient(env);
+  const ddb = getDb(env);
   let existing = await ddb.getItem<EventSourceConfig>(env.SOURCES_TABLE, { id });
   if (!existing) {
     // ファイル/既定由来などDB未登録のソースは、統合結果から取得してDBに登録(upsert)する
@@ -77,7 +77,7 @@ export async function recordIngestResult(
   result: { candidates: number; saved: number }
 ): Promise<void> {
   if (!id) return;
-  const ddb = new DynamoClient(env);
+  const ddb = getDb(env);
   let existing = await ddb.getItem<EventSourceConfig>(env.SOURCES_TABLE, { id });
   if (!existing) {
     const all = await loadAllSources(env);
@@ -95,7 +95,7 @@ export async function recordIngestResult(
 
 export async function deleteSource(env: Env, id: string): Promise<{ ok: true }> {
   if (!id) throw new Error("id is required");
-  const ddb = new DynamoClient(env);
+  const ddb = getDb(env);
   await ddb.deleteItem(env.SOURCES_TABLE, { id });
   return { ok: true };
 }

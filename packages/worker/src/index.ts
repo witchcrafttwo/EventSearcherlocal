@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import type { Context, Next } from "hono";
 import { sha256Hex } from "./crypto.js";
-import { DynamoClient } from "./dynamo.js";
+import { getDb } from "./db.js";
 import { isDiscoveryEnabled, webSearch } from "./discovery.js";
 import { debugEnrich, enrichCandidate } from "./event-ai.js";
 import { clearEvents, clearEventsForSource, previewIngest, runIngest, runScheduledIngest } from "./ingest.js";
@@ -50,7 +50,7 @@ app.get("/profiles/:profileId/events", async (c) => {
 // エリアで検索（市を選んでイベント一覧を取得）。?area=松山市 、未指定なら全件
 app.get("/events", async (c) => {
   const area = (c.req.query("area") ?? "").trim();
-  const ddb = new DynamoClient(c.env);
+  const ddb = getDb(c.env);
   // 全イベントをスキャンして取得する。以前は publishedAt(=収集時刻) の新しい順200件→100件に
   // 絞っていたため、先に収集したサイト(例: エミフル)のイベントが後の収集分に押し出されて
   // 消えていた。件数制限を撤廃し、全件を新しい順で返す。
@@ -83,7 +83,7 @@ app.get("/events", async (c) => {
 
 // エリア選択肢: 表示対象(ON)のイベントから重複なしのエリア一覧を返す
 app.get("/areas", async (c) => {
-  const ddb = new DynamoClient(c.env);
+  const ddb = getDb(c.env);
   const events = await ddb.scanAll<EventRecord>(c.env.EVENTS_TABLE);
   const disabled = await buildDisabledMatcher(c.env);
   const areas = [
@@ -143,7 +143,7 @@ app.get("/admin/source-events", async (c) => {
   if (!sourceId) return c.json({ message: "sourceId query required" }, 400);
   const source = (await loadAllSources(c.env)).find((s) => s.id === sourceId);
   if (!source) return c.json({ events: [], message: "source not found" }, 404);
-  const ddb = new DynamoClient(c.env);
+  const ddb = getDb(c.env);
   const host = hostOf(source.url);
   const all = await ddb.scanAll<EventRecord>(c.env.EVENTS_TABLE);
   const events = all
@@ -156,7 +156,7 @@ app.get("/admin/source-events", async (c) => {
 // 単一イベントの削除（管理画面の個別削除用）
 app.delete("/admin/events/:eventId", async (c) => {
   const eventId = c.req.param("eventId");
-  const ddb = new DynamoClient(c.env);
+  const ddb = getDb(c.env);
   await ddb.deleteItem(c.env.EVENTS_TABLE, { eventId });
   return c.json({ ok: true, deleted: eventId });
 });
@@ -165,7 +165,7 @@ app.delete("/admin/events/:eventId", async (c) => {
 app.patch("/admin/events/:eventId", async (c) => {
   const eventId = c.req.param("eventId");
   const body = await c.req.json<Partial<Pick<EventRecord, "title" | "summary" | "category" | "area" | "eventDate" | "eventEndDate" | "venue" | "address">>>();
-  const ddb = new DynamoClient(c.env);
+  const ddb = getDb(c.env);
   const existing = await ddb.getItem<EventRecord>(c.env.EVENTS_TABLE, { eventId });
   if (!existing) return c.json({ message: "event not found" }, 404);
   const updated: EventRecord = { ...existing };
@@ -192,7 +192,7 @@ app.patch("/admin/events/:eventId", async (c) => {
 // 単一イベントをAIで要約し直す（元ページを取得して再enrich）。誤要約の修正用。
 app.post("/admin/events/:eventId/reenrich", async (c) => {
   const eventId = c.req.param("eventId");
-  const ddb = new DynamoClient(c.env);
+  const ddb = getDb(c.env);
   const existing = await ddb.getItem<EventRecord>(c.env.EVENTS_TABLE, { eventId });
   if (!existing) return c.json({ message: "event not found" }, 404);
   const { text, imageUrl } = await fetchPageData(existing.url);
@@ -226,7 +226,7 @@ app.post("/admin/events/:eventId/reenrich", async (c) => {
 // 終了済みイベントの確認（プレビュー）。?days=0 なら「今日より前」。cutoff より前の終了日のものを数える。
 app.get("/admin/expired-events", async (c) => {
   const days = Math.max(Number(c.req.query("days")) || 0, 0);
-  const ddb = new DynamoClient(c.env);
+  const ddb = getDb(c.env);
   const events = await ddb.scanAll<EventRecord>(c.env.EVENTS_TABLE);
   const expired = events.filter((e) => e.eventType === "event").filter((e) => isExpired(e, days));
   return c.json({
@@ -240,7 +240,7 @@ app.get("/admin/expired-events", async (c) => {
 // 終了済みイベントの一括削除。日付が取れないものは安全のため削除しない。
 app.post("/admin/clear-expired", async (c) => {
   const days = Math.max(Number(c.req.query("days")) || 0, 0);
-  const ddb = new DynamoClient(c.env);
+  const ddb = getDb(c.env);
   const events = await ddb.scanAll<EventRecord>(c.env.EVENTS_TABLE);
   const expired = events.filter((e) => e.eventType === "event").filter((e) => isExpired(e, days));
   const BATCH = 25;
@@ -293,7 +293,7 @@ app.get("/admin/sources-all", async (c) => {
 
 // 統計: 保存イベント総数と、ソースごとの件数（管理画面表示用）
 app.get("/admin/stats", async (c) => {
-  const ddb = new DynamoClient(c.env);
+  const ddb = getDb(c.env);
   const events = await ddb.scanAll<EventRecord>(c.env.EVENTS_TABLE);
   const sources = await loadAllSources(c.env);
   const hostToId = new Map<string, string>();
@@ -411,13 +411,13 @@ async function upsertProfile(env: Env, input: Partial<UserProfile>): Promise<{ p
     updatedAt: now
   };
 
-  const ddb = new DynamoClient(env);
+  const ddb = getDb(env);
   await ddb.putItem(env.PROFILES_TABLE, profile);
   return { profile };
 }
 
 async function listEventsForProfile(env: Env, profileId: string): Promise<{ events: EventRecord[] }> {
-  const ddb = new DynamoClient(env);
+  const ddb = getDb(env);
   const profile = await ddb.getItem<UserProfile>(env.PROFILES_TABLE, { profileId });
   if (!profile) return { events: [] };
 
@@ -454,7 +454,7 @@ async function saveSubscription(
     updatedAt: now
   };
 
-  const ddb = new DynamoClient(env);
+  const ddb = getDb(env);
   await ddb.putItem(env.SUBSCRIPTIONS_TABLE, record);
   return { ok: true };
 }

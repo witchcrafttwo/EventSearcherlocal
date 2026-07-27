@@ -1,4 +1,4 @@
-import { DynamoClient } from "./dynamo.js";
+import { getDb } from "./db.js";
 import type { Env } from "./types.js";
 
 /**
@@ -7,7 +7,7 @@ import type { Env } from "./types.js";
  * 必要な権限: dynamodb:CreateTable, dynamodb:DescribeTable
  */
 export async function setupTables(env: Env): Promise<{ results: Array<{ table: string; created: boolean }> }> {
-  const ddb = new DynamoClient(env);
+  const ddb = getDb(env);
 
   const profiles = await ddb.createTable({
     TableName: env.PROFILES_TABLE,

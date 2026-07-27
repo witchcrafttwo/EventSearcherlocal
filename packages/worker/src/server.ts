@@ -6,6 +6,7 @@ import cron from "node-cron";
 import { existsSync } from "node:fs";
 import { app } from "./index.js";
 import { runScheduledIngest } from "./ingest.js";
+import { setupTables } from "./setup.js";
 import type { Env } from "./types.js";
 
 // Node では環境変数は process.env から渡す（Cloudflare の bindings 相当）
@@ -20,7 +21,11 @@ const hasWeb = existsSync(WEB_DIST);
 const root = new Hono();
 
 // 1) API ルート（既存の Hono アプリをそのまま利用）
-root.route("/", app);
+// APIは /api 配下のみにマウントする。本番フロント(dist)は VITE_API_BASE_URL=/api で
+// ビルドされ /api/* を叩くため、Vercel(api/index.ts が /api を剥がす)と同じ構成に揃える。
+// ルート直下にはマウントしない: SPA のクライアントルート(例 /admin)が API の
+// /admin/* と衝突して 401 になり、管理画面の HTML が返らなくなるのを防ぐため。
+root.route("/api", app);
 
 // 2) フロント配信（dist がある場合のみ）。静的ファイル → 無ければ SPA フォールバックで index.html
 if (hasWeb) {
@@ -41,6 +46,26 @@ const execCtx = {
   }
 } as unknown as ExecutionContext;
 
+// 起動時に PostgreSQL のテーブルを用意する（CREATE TABLE IF NOT EXISTS なので冪等）。
+// 新しいDBを指しても、初回起動でテーブルが自動作成される。失敗しても起動は続ける。
+async function ensureTables(): Promise<void> {
+  if (!process.env.DATABASE_URL) {
+    console.warn("[server] DATABASE_URL 未設定のためテーブル自動作成をスキップ");
+    return;
+  }
+  try {
+    const { results } = await setupTables(env);
+    const created = results.filter((r) => r.created).map((r) => r.table);
+    console.log(
+      created.length > 0
+        ? `[server] tables created: ${created.join(", ")}`
+        : "[server] tables ready (already exist)"
+    );
+  } catch (error) {
+    console.error("[server] table setup failed", error);
+  }
+}
+
 serve(
   {
     fetch: (request: Request) => root.fetch(request, env, execCtx),
@@ -48,6 +73,7 @@ serve(
   },
   (info) => {
     console.log(`[server] listening on http://0.0.0.0:${info.port}`);
+    void ensureTables();
   }
 );
 

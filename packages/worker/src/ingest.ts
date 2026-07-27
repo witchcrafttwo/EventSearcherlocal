@@ -1,6 +1,6 @@
 import { sha256Hex } from "./crypto.js";
 import { discoverCandidates, isDiscoveryEnabled } from "./discovery.js";
-import { DynamoClient } from "./dynamo.js";
+import { getDb, type Db } from "./db.js";
 import { enrichCandidate } from "./event-ai.js";
 import { buildGeoQuery, geocode } from "./geocode.js";
 import { buildAiText, fetchPageData } from "./page.js";
@@ -14,7 +14,7 @@ export async function runIngest(
 ): Promise<{ saved: number; notified: number; candidates: number }> {
   const { force = false, limit = Number.POSITIVE_INFINITY, sourceId, maxMs = Number.POSITIVE_INFINITY } = options;
   const startedAt = Date.now();
-  const ddb = new DynamoClient(env);
+  const ddb = getDb(env);
 
   // AgentCore Web Search が設定済みなら自動発見、未設定なら登録済みURL(+環境変数)から収集
   let candidates: RawEventCandidate[];
@@ -81,21 +81,21 @@ export async function runIngest(
 
 /** eventsテーブルを空にする（再収集前のリセット用） */
 export async function clearEvents(env: Env): Promise<{ deleted: number }> {
-  const ddb = new DynamoClient(env);
+  const ddb = getDb(env);
   const events = await ddb.scanAll<EventRecord>(env.EVENTS_TABLE);
   return deleteEventsInBatches(env, ddb, events);
 }
 
 /** 指定サイト（ソース）のイベントだけ削除。sourceId一致 or URLホスト一致で対象判定。 */
 export async function clearEventsForSource(env: Env, source: EventSourceConfig): Promise<{ deleted: number }> {
-  const ddb = new DynamoClient(env);
+  const ddb = getDb(env);
   const events = await ddb.scanAll<EventRecord>(env.EVENTS_TABLE);
   const host = hostOf(source.url);
   const targets = events.filter((ev) => ev.sourceId === source.id || (host !== "" && hostOf(ev.url) === host));
   return deleteEventsInBatches(env, ddb, targets);
 }
 
-async function deleteEventsInBatches(env: Env, ddb: DynamoClient, events: EventRecord[]): Promise<{ deleted: number }> {
+async function deleteEventsInBatches(env: Env, ddb: Db, events: EventRecord[]): Promise<{ deleted: number }> {
   const BATCH = 25;
   for (let i = 0; i < events.length; i += BATCH) {
     const slice = events.slice(i, i + BATCH);
@@ -156,7 +156,7 @@ async function notifyMatches(
     return 0; // web-push が使えない環境では送信しない
   }
 
-  const ddb = new DynamoClient(env);
+  const ddb = getDb(env);
   const profileById = new Map(profiles.map((p) => [p.profileId, p]));
   let sent = 0;
   for (const sub of subscriptions) {
