@@ -11,6 +11,8 @@
     "typecheck": "npm run typecheck -ws",
     "web:dev": "npm --workspace @prefecture-events-ai/web run dev",
     "web:build": "npm --workspace @prefecture-events-ai/web run build",
+    "start": "npm --workspace @prefecture-events-ai/worker run start",
+    "pc": "npm run web:build && npm run start",
     "ingest": "npm --workspace @prefecture-events-ai/worker run ingest --",
     "server:dev": "npm --workspace @prefecture-events-ai/server run dev",
     "server:build": "npm --workspace @prefecture-events-ai/server run build",
