@@ -1,0 +1,17 @@
+{
+  "name": "イベントAI通知",
+  "short_name": "イベント通知",
+  "description": "子どもの年齢・興味・居住エリアに合うイベントを自動収集して通知します。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#ea580c",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

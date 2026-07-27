@@ -1,0 +1,794 @@
+:root {
+  color: #14213d;
+  background: #f8fafc;
+  font-family: Inter, "Noto Sans JP", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.appShell {
+  min-height: 100vh;
+  background:
+    linear-gradient(180deg, rgba(234, 88, 12, 0.08), rgba(248, 250, 252, 0) 320px),
+    #f8fafc;
+}
+
+.workspace {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 28px 0;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.toolbar h1,
+.panelHeader h2,
+.eventCard h3 {
+  margin: 0;
+  letter-spacing: 0;
+}
+
+.toolbar h1 {
+  font-size: clamp(28px, 5vw, 44px);
+  line-height: 1.12;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  color: #ea580c;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.iconButton,
+.primaryButton,
+.secondaryButton,
+.chip {
+  border: 0;
+  border-radius: 8px;
+  min-height: 44px;
+}
+
+.iconButton {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  background: #14213d;
+  color: white;
+}
+
+.notice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  border-left: 4px solid #f97316;
+  background: #fff7ed;
+  color: #7c2d12;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 18px;
+  align-items: start;
+}
+
+.profilePanel,
+.eventsPanel {
+  background: white;
+  border: 1px solid #dbe4ea;
+  border-radius: 8px;
+  box-shadow: 0 18px 40px rgba(20, 33, 61, 0.08);
+}
+
+.profilePanel {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+  position: sticky;
+  top: 16px;
+}
+
+.eventsPanel {
+  padding: 18px;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.panelHeader.split {
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 14px;
+}
+
+label,
+fieldset {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+label span,
+legend {
+  color: #475569;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+input {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0 12px;
+  background: #fff;
+  color: #14213d;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  padding: 0 13px;
+  background: #edf2f7;
+  color: #334155;
+}
+
+.chip.selected {
+  background: #ea580c;
+  color: #fff;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.primaryButton,
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 14px;
+  font-weight: 700;
+}
+
+.primaryButton {
+  background: #14213d;
+  color: #fff;
+}
+
+.secondaryButton {
+  background: #f97316;
+  color: #fff;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.status {
+  max-width: 360px;
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+  text-align: right;
+}
+
+.eventList {
+  display: grid;
+  gap: 12px;
+}
+
+.eventCard {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #ffffff;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.eventCard h3,
+.eventCard p,
+.eventCard a {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.eventMeta,
+.eventFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #64748b;
+  font-size: 13px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.eventMeta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.eventCard h3 {
+  font-size: 18px;
+}
+
+.eventCard p {
+  margin: 0;
+  color: #334155;
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.eventFooter a {
+  color: #ea580c;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.emptyState {
+  display: grid;
+  place-items: center;
+  min-height: 220px;
+  color: #64748b;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+}
+
+@media (max-width: 860px) {
+  .workspace {
+    width: min(100% - 20px, 720px);
+    padding: 18px 0;
+  }
+
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .profilePanel {
+    position: static;
+  }
+
+  .panelHeader.split,
+  .toolbar {
+    align-items: flex-start;
+  }
+
+  .status {
+    text-align: left;
+  }
+}
+
+@media (max-width: 520px) {
+  .toolbar h1 {
+    font-size: 30px;
+  }
+
+  .actions,
+  .panelHeader.split {
+    grid-template-columns: 1fr;
+  }
+
+  .panelHeader.split {
+    display: grid;
+  }
+
+  .eventMeta,
+  .eventFooter {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+/* 情報源URLパネル */
+.sourcePanel {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+  display: grid;
+  gap: 12px;
+}
+
+.panelHeaderTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hint {
+  margin: 0;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.sourceForm {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sourceForm input {
+  flex: 1 1 220px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.sourceList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.sourceList li {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.sourceRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sourceInfo {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.sourceName {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.sourceInfo a {
+  color: #2563eb;
+  font-size: 12px;
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sourceTag {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.sourceEmpty {
+  color: #94a3b8;
+  font-size: 13px;
+  padding: 8px;
+}
+
+.sourceImageToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #475569;
+  margin-top: 4px;
+}
+
+.sourceImageToggle input {
+  width: 14px;
+  height: 14px;
+}
+
+.sourceNote {
+  margin-top: 4px;
+  width: 100%;
+  max-width: 420px;
+  font-size: 12px;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 6px 8px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.sourceEvents {
+  border-top: 1px dashed #cbd5e1;
+  padding-top: 8px;
+}
+
+.eventList {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.eventList li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 10px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.eventInfo {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.eventTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.eventMeta {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.eventInfo a {
+  font-size: 11px;
+  color: #2563eb;
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.eventActions {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.eventThumb {
+  flex-shrink: 0;
+  display: block;
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  background: #f1f5f9;
+}
+
+.eventThumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.statsBlock {
+  display: grid;
+  gap: 6px;
+}
+
+.linkButton {
+  background: none;
+  border: none;
+  color: #2563eb;
+  cursor: pointer;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+  padding: 0;
+}
+
+.breakdown {
+  display: grid;
+  gap: 8px;
+  padding: 8px 10px;
+  background: #f1f5f9;
+  border-radius: 8px;
+}
+
+.breakdownTitle {
+  font-size: 11px;
+  font-weight: 700;
+  color: #475569;
+  margin-right: 8px;
+}
+
+.breakdownTag {
+  display: inline-block;
+  font-size: 11px;
+  color: #334155;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 2px 6px;
+  margin: 2px 4px 2px 0;
+}
+
+.sourceHealth {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: #64748b;
+}
+
+.sourceHealth.warn {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.eventFilterRow {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.eventFilterRow input {
+  flex: 1;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 6px 8px;
+  font-size: 12px;
+}
+
+.eventFilterRow select {
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 6px 8px;
+  font-size: 12px;
+}
+
+.eventEdit {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+}
+
+.eventEdit input,
+.eventEdit textarea,
+.eventEdit select {
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 6px 8px;
+  font-size: 12px;
+  font-family: inherit;
+}
+
+.eventEditRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.eventEditRow > * {
+  flex: 1;
+}
+
+.eventEditRow > span {
+  flex: 0;
+  color: #64748b;
+}
+
+.eventEditActions {
+  display: flex;
+  gap: 8px;
+}
+
+/* エリア選択・イベント並び替えコントロール */
+.profilePanel select {
+  height: 40px;
+  padding: 0 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #fff;
+  width: 100%;
+}
+
+.eventControls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.checkboxLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #334155;
+  cursor: pointer;
+}
+
+.checkboxLabel input {
+  width: 16px;
+  height: 16px;
+  accent-color: #ea580c;
+}
+
+.sortLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #334155;
+}
+
+.sortLabel select {
+  height: 36px;
+  padding: 0 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 14px;
+}
+
+/* エリア検索バー */
+.searchBar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  background: white;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+  flex-wrap: wrap;
+}
+
+.searchArea {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 240px;
+  color: #ea580c;
+}
+
+.searchArea select {
+  flex: 1;
+  height: 44px;
+  padding: 0 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 16px;
+  background: #fff;
+  color: #0f172a;
+}
+
+/* ソースON/OFFトグル */
+.sourceToggle {
+  display: flex;
+  align-items: center;
+  padding-right: 4px;
+}
+
+.sourceToggle input {
+  width: 18px;
+  height: 18px;
+  accent-color: #ea580c;
+  cursor: pointer;
+}
+
+.sourceDisabled {
+  opacity: 0.5;
+}
+
+.sourceDisabled .sourceName::after {
+  content: "（非表示）";
+  color: #ef4444;
+  font-size: 12px;
+}
+
+/* 危険な操作（全削除）ボタン */
+.dangerRow {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.dangerButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #fef2f2;
+  color: #dc2626;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.dangerButton:hover:not(:disabled) {
+  background: #fee2e2;
+}
+
+.dangerButton:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* 管理画面のスマホ調整 */
+@media (max-width: 640px) {
+  .workspace { width: min(100% - 20px, 100%); padding: 16px 0; }
+  .sourceRow { flex-wrap: wrap; }
+  .sourceInfo { flex: 1 1 100%; order: 3; }
+  .sourceRow .iconButton { width: 40px; height: 40px; }
+  .sourceNote { max-width: 100%; }
+  .eventList { max-height: 320px; }
+  .eventList li { flex-wrap: wrap; }
+  .dangerRow { flex-wrap: wrap; }
+  .breakdownTag { font-size: 10px; }
+}

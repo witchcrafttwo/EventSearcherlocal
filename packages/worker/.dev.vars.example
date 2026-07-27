@@ -1,0 +1,14 @@
+# ローカル開発用シークレット（wrangler dev が読み込む）
+# このファイルをコピーして `.dev.vars` を作り、実際の値を入れてください。
+# `.dev.vars` は .gitignore 済み。コミットしないこと。
+
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+
+# AgentCore Web Search も同じ上のIAMキーで動きます（Cognito不要）。追加のシークレットは不要です。
+
+# 外部AI(GLM等)を使う場合のAPIキー（AI_PROVIDER=openai のとき）:
+# LLM_API_KEY=
+
+# 管理者画面のログイントークン（本番では必ず設定）。ローカルは未設定なら認証スキップ。
+# ADMIN_TOKEN=

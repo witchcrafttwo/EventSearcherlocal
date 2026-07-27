@@ -1,0 +1,46 @@
+name = "prefecture-events-ai"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# workers.dev には公開せず、カスタムドメインのみで公開する
+workers_dev = false
+
+# 公開先: カスタムドメイン（witchcrafttwo.com が同じCloudflareアカウントのゾーンである必要あり）
+[[routes]]
+pattern = "event.witchcrafttwo.com"
+custom_domain = true
+
+# 定期ingest: 6時間ごと。※workers.devサブドメイン登録後に有効化する（未登録だとデプロイがcode:10063で失敗するため一旦無効）
+# [triggers]
+# crons = ["0 */6 * * *"]
+
+[vars]
+AWS_REGION = "ap-northeast-1"
+AI_PROVIDER = "bedrock"
+BEDROCK_MODEL_ID = "zai.glm-5"
+# 賢い外部AI(GLM等)を使う場合: AI_PROVIDER を "openai" にして以下を設定
+#   AI_PROVIDER = "openai"
+#   LLM_BASE_URL = "https://api.z.ai/api/paas/v4"   # GLM(Z.ai)。BigModelなら https://open.bigmodel.cn/api/paas/v4
+#   LLM_MODEL = "glm-4.6"                            # 例: glm-4.6 / glm-5.1 / deepseek-chat / gpt-4o-mini
+#   （LLM_API_KEY は .dev.vars / wrangler secret で設定）
+PROFILES_TABLE = "prefecture-events-ai-profiles"
+EVENTS_TABLE = "prefecture-events-ai-events"
+SUBSCRIPTIONS_TABLE = "prefecture-events-ai-subscriptions"
+SOURCES_TABLE = "prefecture-events-ai-sources"
+EVENT_SOURCES_JSON = '[]'
+VAPID_SUBJECT = "mailto:admin@example.com"
+
+# --- AgentCore Web Search（自動発見 / IAM署名で呼ぶ）---
+# 検索機能は us-east-1 限定。Gateway作成後にエンドポイントURLを設定する。
+# 認証は Gateway を「IAMインバウンド認証」で作成し、上のAWSキーで署名して呼ぶ（Cognito不要）。
+AGENTCORE_GATEWAY_URL = ""              # https://xxxx.gateway.bedrock-agentcore.us-east-1.amazonaws.com
+WEB_SEARCH_TOOL_NAME = ""              # tools/list で確認した名前（例: events-search___WebSearch）
+SEARCH_AREAS = "[]"                    # 例: ["新潟県","新潟市"]
+SEARCH_MAX_RESULTS = "10"
+
+# 以下はシークレット。コミットせず `wrangler secret put` で設定してください:
+#   wrangler secret put AWS_ACCESS_KEY_ID
+#   wrangler secret put AWS_SECRET_ACCESS_KEY
+#   wrangler secret put VAPID_PUBLIC_KEY
+#   wrangler secret put VAPID_PRIVATE_KEY

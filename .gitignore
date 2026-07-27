@@ -1,0 +1,15 @@
+node_modules/
+dist/
+build/
+cdk.out/
+.wrangler/
+.vercel/
+.env
+.env.*
+!.env.example
+.dev.vars
+*.tsbuildinfo
+えひめイベントナビ_発表資料.pptx
+make_slides.py
+えひめイベントナビ_技術スタック.xlsx
+~$えひめイベントナビ_技術スタック.xlsx

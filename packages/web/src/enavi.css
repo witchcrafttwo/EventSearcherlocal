@@ -1,0 +1,1268 @@
+.enavi {
+  min-height: 100vh;
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.enaviHeader {
+  background: linear-gradient(135deg, #ea580c, #f97316);
+  color: #fff;
+}
+
+.enaviHeaderInner {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 22px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* 文字サイズ変更（小・中・大） */
+.fontSizeControl {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.fontSizeControl > span {
+  font-size: 12px;
+  opacity: 0.9;
+  margin-right: 2px;
+}
+
+.fontSizeControl button {
+  min-width: 34px;
+  height: 34px;
+  padding: 0 8px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.fontSizeControl button:nth-child(2) { font-size: 12px; }
+.fontSizeControl button:nth-child(3) { font-size: 15px; }
+.fontSizeControl button:nth-child(4) { font-size: 18px; }
+
+.fontSizeControl button.active {
+  background: #fff;
+  color: #ea580c;
+  border-color: #fff;
+}
+
+.enaviHeader h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.enaviHeader p {
+  margin: 6px 0 0;
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+.enaviMain {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.filterCard {
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+  display: grid;
+  gap: 12px;
+}
+
+.filterRow {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  flex: 1 1 200px;
+  font-size: 13px;
+  color: #475569;
+}
+
+.field span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.field select {
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 15px;
+  background: #fff;
+  color: #0f172a;
+}
+
+.filterActions {
+  display: flex;
+  gap: 10px;
+}
+
+.primaryButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 42px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 10px;
+  background: #ea580c;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.ghostButton {
+  height: 42px;
+  padding: 0 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: #fff;
+  color: #475569;
+  cursor: pointer;
+}
+
+.primaryButton:disabled,
+.ghostButton:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.listHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 22px 2px 8px;
+  flex-wrap: wrap;
+}
+
+.newBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0;
+  font-weight: 700;
+  color: #ea580c;
+}
+
+.listStatus {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.sortLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #475569;
+}
+
+.sortLabel select {
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.checkboxLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #475569;
+  cursor: pointer;
+}
+
+.checkboxLabel input {
+  width: 16px;
+  height: 16px;
+  accent-color: #ea580c;
+}
+
+.listCheckbox {
+  margin: 0 2px 14px;
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.enaviCard {
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.cardThumb {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: #e2e8f0;
+}
+
+.cardThumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.thumbPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: #94a3b8;
+}
+
+.catBadge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(234, 88, 12, 0.92);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.cardBody {
+  padding: 12px 14px 14px;
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.cardMeta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.cardMeta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.enaviCard h3 {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.enaviCard p {
+  margin: 0;
+  font-size: 13px;
+  color: #334155;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.cardFooter a {
+  color: #c2410c;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.emptyState {
+  grid-column: 1 / -1;
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  min-height: 200px;
+  color: #64748b;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+}
+
+.moreButton {
+  display: block;
+  margin: 20px auto 0;
+  padding: 12px 28px;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  background: #fff;
+  color: #ea580c;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.notice {
+  background: #fef2f2;
+  color: #b91c1c;
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: 14px;
+  font-size: 13px;
+}
+
+.enaviFooter {
+  max-width: 1040px;
+  margin: 30px auto 0;
+  padding: 20px;
+  color: #94a3b8;
+  font-size: 12px;
+  text-align: center;
+}
+
+/* 表示切替タブ（すべて / ブックマーク） */
+.viewTabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.viewTab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #475569;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.viewTab:hover {
+  border-color: #ea580c;
+  color: #ea580c;
+}
+
+.viewTab.active {
+  background: #ea580c;
+  border-color: #ea580c;
+  color: #fff;
+}
+
+/* カード上のブックマークボタン */
+.bookmarkButton {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.55);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.bookmarkButton:hover {
+  background: rgba(15, 23, 42, 0.8);
+}
+
+.bookmarkButton:active {
+  transform: scale(0.92);
+}
+
+.bookmarkButton.saved {
+  background: #f59e0b;
+  color: #fff;
+}
+
+/* 新着(NEW)タグ: 収集から7日間だけ表示。カテゴリバッジと重ならないよう左下に配置 */
+.newTag {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 3px 8px;
+  border-radius: 999px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+/* カテゴリ複数選択チップ */
+.categoryChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.categoryChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  background: #fff;
+  color: #475569;
+  font-size: 13px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.categoryChip input {
+  display: none;
+}
+
+.categoryChip:hover {
+  border-color: #ea580c;
+}
+
+.categoryChip.active {
+  background: #ea580c;
+  border-color: #ea580c;
+  color: #fff;
+  font-weight: 700;
+}
+
+.notifyStatus {
+  margin: 8px 2px 0;
+  font-size: 13px;
+  color: #c2410c;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+/* ===== 文字サイズスケール ===== */
+.enavi { --fs: 1; }
+.enavi.fs-small { --fs: 0.9; }
+.enavi.fs-medium { --fs: 1; }
+.enavi.fs-large { --fs: 1.2; }
+
+/* 読みやすさに関わる主要テキストをスケール（高い詳細度で既定値を上書き） */
+.enavi .enaviCard h3 { font-size: calc(16px * var(--fs)); }
+.enavi .enaviCard p { font-size: calc(13px * var(--fs)); }
+.enavi .cardMeta { font-size: calc(12px * var(--fs)); }
+.enavi .cardFooter { font-size: calc(12px * var(--fs)); }
+.enavi .listStatus { font-size: calc(13px * var(--fs)); }
+.enavi .newBadge { font-size: calc(14px * var(--fs)); }
+.enavi .field { font-size: calc(13px * var(--fs)); }
+.enavi .field select { font-size: calc(15px * var(--fs)); }
+.enavi .categoryChip { font-size: calc(13px * var(--fs)); }
+.enavi .viewTab { font-size: calc(13px * var(--fs)); }
+.enavi .checkboxLabel { font-size: calc(13px * var(--fs)); }
+.enavi .sortLabel { font-size: calc(13px * var(--fs)); }
+.enavi .sortLabel select { font-size: calc(14px * var(--fs)); }
+
+/* ===== トップへ戻るボタン ===== */
+.scrollTopBtn {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 999px;
+  background: #ea580c;
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.28);
+  cursor: pointer;
+  z-index: 50;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.scrollTopBtn:hover {
+  background: #c2410c;
+}
+
+.scrollTopBtn:active {
+  transform: scale(0.92);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scrollTopBtn { transition: none; }
+}
+
+/* iPhone等のセーフエリアを避ける */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .scrollTopBtn { bottom: calc(18px + env(safe-area-inset-bottom)); }
+}
+
+/* ===== あなたにおすすめ ===== */
+.recoSection {
+  margin: 18px 0 6px;
+  padding: 16px;
+  background: linear-gradient(135deg, #fff7ed, #ffedd5);
+  border: 1px solid #fed7aa;
+  border-radius: 14px;
+}
+
+.recoTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: calc(17px * var(--fs));
+  color: #9a3412;
+}
+
+.recoHint {
+  margin: 4px 0 12px;
+  font-size: calc(12px * var(--fs));
+  color: #b45309;
+}
+
+.recoStrip {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scroll-snap-type: x mandatory;
+}
+
+.recoCard {
+  flex: 0 0 240px;
+  scroll-snap-align: start;
+  background: #fff;
+  border: 1px solid #fde3c4;
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.recoCardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 24px;
+}
+
+.recoCat {
+  background: rgba(234, 88, 12, 0.92);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.recoBookmark {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.recoBookmark.saved {
+  background: #f59e0b;
+  color: #fff;
+}
+
+.recoCard h3 {
+  margin: 0;
+  font-size: calc(15px * var(--fs));
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.recoMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  color: #64748b;
+  font-size: calc(12px * var(--fs));
+  margin-top: auto;
+}
+
+.recoMeta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.recoCard > a {
+  color: #c2410c;
+  font-weight: 700;
+  font-size: calc(13px * var(--fs));
+  text-decoration: none;
+  align-self: flex-start;
+}
+
+/* ===== マップ ===== */
+.mapWrap {
+  margin-top: 8px;
+}
+
+.eventsMap {
+  width: 100%;
+  height: 68vh;
+  min-height: 380px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #fed7aa;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+  z-index: 0;
+}
+
+.mapNote {
+  margin: 8px 2px 0;
+  font-size: calc(12px * var(--fs));
+  color: #64748b;
+}
+
+/* イベントピン（オレンジのしずく型） */
+.mapPin {
+  display: block;
+  width: 16px;
+  height: 16px;
+  background: #ea580c;
+  border: 2px solid #fff;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+/* 現在地ピン（青い丸＋パルス） */
+.mapMe {
+  display: block;
+  width: 14px;
+  height: 14px;
+  background: #2563eb;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.25);
+}
+
+/* ポップアップ中身 */
+.mapPopup {
+  display: grid;
+  gap: 4px;
+  min-width: 180px;
+}
+
+.mapPopupCat {
+  justify-self: start;
+  background: rgba(234, 88, 12, 0.92);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.mapPopup strong {
+  font-size: 14px;
+  color: #0f172a;
+  line-height: 1.4;
+}
+
+.mapPopupMeta {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.mapPopup a {
+  color: #c2410c;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+/* ===== クリック可能カード ===== */
+.enaviCard.clickable,
+.recoCard.clickable {
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+
+.enaviCard.clickable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.14);
+}
+
+/* ===== イベント詳細モーダル ===== */
+.detailOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 24px 16px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.detailModal {
+  position: relative;
+  background: #fff;
+  border-radius: 16px;
+  width: min(640px, 100%);
+  margin: auto;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.35);
+}
+
+.detailClose {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.55);
+  color: #fff;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.detailImage {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #e2e8f0;
+}
+
+.detailImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.detailBody {
+  padding: 18px 20px 22px;
+  display: grid;
+  gap: 10px;
+}
+
+.detailCat {
+  justify-self: start;
+  background: rgba(234, 88, 12, 0.92);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.detailModal h2 {
+  margin: 0;
+  font-size: calc(20px * var(--fs, 1));
+  line-height: 1.35;
+  color: #0f172a;
+  overflow-wrap: anywhere;
+}
+
+.detailMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  color: #475569;
+  font-size: calc(13px * var(--fs, 1));
+}
+
+.detailMeta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.detailAddress {
+  margin: 0;
+  font-size: calc(13px * var(--fs, 1));
+  color: #64748b;
+}
+
+.detailSummary {
+  margin: 4px 0;
+  font-size: calc(14px * var(--fs, 1));
+  line-height: 1.7;
+  color: #334155;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.detailMap {
+  width: 100%;
+  height: 220px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #fed7aa;
+  z-index: 0;
+}
+
+.detailNoMap {
+  margin: 0;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.detailActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.detailPrimary,
+.detailGhost {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 42px;
+  padding: 0 16px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.detailPrimary {
+  background: #ea580c;
+  color: #fff;
+  border: none;
+}
+
+.detailGhost {
+  background: #fff;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+}
+
+.detailGhost.saved {
+  background: #f59e0b;
+  color: #fff;
+  border-color: #f59e0b;
+}
+
+.detailSource {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+/* ===== 日付絞り込み ===== */
+.dateQuick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dateChip {
+  padding: 6px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  background: #fff;
+  color: #475569;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.dateChip.active {
+  background: #ea580c;
+  border-color: #ea580c;
+  color: #fff;
+  font-weight: 700;
+}
+
+.dateRange {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.dateRange input {
+  height: 40px;
+  padding: 0 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #0f172a;
+}
+
+.dateRange span {
+  color: #64748b;
+}
+
+/* ===== カレンダー ===== */
+.calendar {
+  background: #fff;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+  margin-top: 8px;
+}
+
+.calHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin-bottom: 10px;
+}
+
+.calLabel {
+  font-size: calc(17px * var(--fs, 1));
+  font-weight: 700;
+  color: #0f172a;
+  min-width: 120px;
+  text-align: center;
+}
+
+.calNav {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  background: #fff;
+  color: #475569;
+  cursor: pointer;
+}
+
+.calGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.calWeekdays {
+  margin-bottom: 4px;
+}
+
+.calWd {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+  padding: 4px 0;
+}
+
+.calWd.sun { color: #dc2626; }
+.calWd.sat { color: #2563eb; }
+
+.calCell {
+  position: relative;
+  min-height: 66px;
+  border: 1px solid #eef2f7;
+  border-radius: 8px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 3px;
+  font-size: 13px;
+  color: #334155;
+  cursor: default;
+  padding: 4px;
+  overflow: hidden;
+}
+
+.calCell .calDay {
+  text-align: left;
+  font-weight: 600;
+}
+
+.calCell.empty {
+  border: none;
+  background: transparent;
+}
+
+.calCell.sun .calDay { color: #dc2626; }
+.calCell.sat .calDay { color: #2563eb; }
+
+.calCell.has {
+  cursor: pointer;
+  background: #fff7ed;
+  border-color: #fed7aa;
+}
+
+.calCell.has:hover {
+  background: #ffedd5;
+}
+
+.calCell.today {
+  outline: 2px solid #ea580c;
+  outline-offset: -2px;
+}
+
+.calCell.selected {
+  background: #ea580c;
+  border-color: #ea580c;
+}
+
+.calCell.selected .calDay {
+  color: #fff;
+}
+
+/* 日セル内のカテゴリチップ */
+.calCats {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+}
+
+.calCat {
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.4;
+  padding: 1px 4px;
+  border-radius: 4px;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+
+.calCatMore {
+  font-size: 9px;
+  color: #94a3b8;
+  line-height: 1;
+  text-align: left;
+}
+
+.calCell.selected .calCat {
+  background: rgba(255, 255, 255, 0.25) !important;
+  color: #fff !important;
+}
+
+.calCell.selected .calCatMore {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* カテゴリ別グループ（折りたたみ） */
+.catGroups {
+  display: grid;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.catGroup {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.catGroupHead {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border: none;
+  border-left: 4px solid #64748b;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+}
+
+.catGroupHead:hover {
+  background: #f8fafc;
+}
+
+.catDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.catGroupName {
+  font-weight: 700;
+  color: #0f172a;
+  font-size: calc(14px * var(--fs, 1));
+}
+
+.catGroupCount {
+  margin-left: auto;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.catGroup .cardGrid {
+  padding: 0 12px 12px;
+}
+
+.calSelected {
+  font-weight: 700;
+  color: #0f172a;
+  margin: 14px 2px 8px;
+}
+
+.calHint {
+  margin: 12px 2px;
+  font-size: calc(13px * var(--fs, 1));
+  color: #64748b;
+}
+
+/* ===== スマホ最適化 ===== */
+@media (max-width: 640px) {
+  .enaviMain { padding: 14px; }
+  .enaviHeaderInner { padding: 16px 14px; gap: 10px; }
+  .enaviHeader h1 { font-size: 20px; }
+  .enaviHeader p { font-size: 12px; }
+
+  /* タブは横スクロールで1行を維持（スワイプで切替） */
+  .viewTabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+    margin-left: -2px;
+    margin-right: -2px;
+    scrollbar-width: none;
+  }
+  .viewTabs::-webkit-scrollbar { display: none; }
+  .viewTab {
+    flex-shrink: 0;
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .filterCard { padding: 12px; border-radius: 12px; }
+  .filterActions { flex-wrap: wrap; }
+  .filterActions .primaryButton,
+  .filterActions .ghostButton {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+
+  .dateRange { flex-wrap: wrap; }
+  .dateRange input { flex: 1 1 42%; min-width: 0; }
+  .dateQuick { gap: 6px; }
+
+  /* 一覧は1カラム */
+  .cardGrid { grid-template-columns: 1fr; gap: 12px; }
+
+  .listHeader { gap: 8px; }
+  .sortLabel { flex: 1 1 auto; justify-content: flex-end; }
+
+  /* おすすめカードは少し小さめ */
+  .recoSection { padding: 12px; }
+  .recoCard { flex-basis: 200px; }
+
+  /* カレンダーはコンパクトに */
+  .calendar { padding: 10px; }
+  .calGrid { gap: 3px; }
+  .calCell { min-height: 56px; padding: 3px; gap: 2px; }
+  .calCell .calDay { font-size: 12px; }
+  .calCat { font-size: 8px; padding: 1px 3px; }
+  .calCatMore { font-size: 8px; }
+  .calLabel { font-size: 16px; min-width: 96px; }
+  .calWd { font-size: 11px; }
+
+  /* 地図は画面高に合わせる */
+  .eventsMap { height: 60vh; min-height: 320px; }
+
+  /* 詳細モーダルはほぼ全画面（下崩れ防止） */
+  .detailOverlay { padding: 0; }
+  .detailModal {
+    width: 100%;
+    min-height: 100vh;
+    margin: 0;
+    border-radius: 0;
+  }
+  .detailBody { padding: 16px 16px 28px; }
+  .detailModal h2 { font-size: calc(18px * var(--fs, 1)); }
+  .detailMap { height: 200px; }
+  .detailActions .detailPrimary,
+  .detailActions .detailGhost {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+
+  /* カテゴリ別グループ内のカードも1カラム */
+  .catGroup .cardGrid { grid-template-columns: 1fr; }
+
+  /* トップへ戻るボタンは少し小さく */
+  .scrollTopBtn { width: 44px; height: 44px; right: 14px; bottom: 14px; }
+}
+
+/* さらに狭い端末（〜380px）向けの微調整 */
+@media (max-width: 380px) {
+  .calCat { font-size: 0; padding: 3px; } /* 名前が入らない極小幅では色だけのバーに */
+  .calCat::before {
+    content: "";
+    display: block;
+    height: 4px;
+    border-radius: 2px;
+    background: currentColor;
+  }
+  .calCell { min-height: 48px; }
+}

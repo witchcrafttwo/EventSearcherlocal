@@ -1,0 +1,16 @@
+[
+  {
+    "id": "sample-official-events",
+    "name": "公式イベントページ",
+    "url": "https://example.jp/events",
+    "area": "県内",
+    "type": "html"
+  },
+  {
+    "id": "sample-rss",
+    "name": "観光イベントRSS",
+    "url": "https://example.jp/events.xml",
+    "area": "県内",
+    "type": "rss"
+  }
+]

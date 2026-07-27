@@ -1,0 +1,14 @@
+{
+  "installCommand": "npm install",
+  "buildCommand": "npm run build --workspace @prefecture-events-ai/web",
+  "outputDirectory": "packages/web/dist",
+  "framework": null,
+  "rewrites": [
+    { "source": "/api", "destination": "/api/index" },
+    { "source": "/api/(.*)", "destination": "/api/index" },
+    { "source": "/((?!api).*)", "destination": "/index.html" }
+  ],
+  "crons": [
+    { "path": "/api/cron/ingest", "schedule": "0 0 * * *" }
+  ]
+}

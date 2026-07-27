@@ -1,0 +1,33 @@
+{
+  "name": "@prefecture-events-ai/infra",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "synth": "cdk synth",
+    "deploy": "cdk deploy"
+  },
+  "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.609.0",
+    "@aws-sdk/client-dynamodb": "^3.609.0",
+    "@aws-sdk/client-lambda": "^3.609.0",
+    "@aws-sdk/client-secrets-manager": "^3.609.0",
+    "@aws-sdk/lib-dynamodb": "^3.609.0",
+    "aws-cdk-lib": "^2.149.0",
+    "cheerio": "^1.0.0-rc.12",
+    "constructs": "^10.3.0",
+    "fast-xml-parser": "^5.9.3",
+    "openai": "^6.14.0",
+    "web-push": "^3.6.7"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.141",
+    "@types/web-push": "^3.6.3",
+    "aws-cdk": "^2.149.0",
+    "esbuild": "^0.28.1",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.16.2"
+  }
+}
