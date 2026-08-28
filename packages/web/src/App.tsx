@@ -79,23 +79,32 @@ export function App() {
   const bookmarkCount = Object.keys(bookmarks).length;
   const viewedEvents = useMemo(() => loadViewedEvents(), [viewTick, view]);
   const historyCount = useMemo(() => viewCount(), [viewTick, view]);
+  // 検索バーを出すビュー。マップ/カレンダーでは出さず、キーワードも無効にする。
+  const showSearch = view === "all" || view === "saved" || view === "history";
+  const trimmedKeyword = keyword.trim();
   const filtered = useMemo(() => {
-    if (view === "history") {
-      // 履歴は閲覧順を維持。カテゴリ絞り込みのみ適用（終了済みも表示する）
-      return categories.length > 0
-        ? viewedEvents.filter((e) => categories.includes(e.category ?? "その他"))
-        : viewedEvents;
-    }
-    const baseList = view === "saved" ? Object.values(bookmarks) : events;
-    return sortAndFilter(baseList, { hidePast, sortBy, categories, dateFrom, dateTo, keyword });
-  }, [view, viewedEvents, bookmarks, events, hidePast, sortBy, categories, dateFrom, dateTo, keyword]);
+    const activeKeyword = showSearch ? keyword : "";
+    const base =
+      view === "history"
+        // 履歴は閲覧順を維持。カテゴリ絞り込みのみ適用（終了済みも表示する）
+        ? categories.length > 0
+          ? viewedEvents.filter((e) => categories.includes(e.category ?? "その他"))
+          : viewedEvents
+        : sortAndFilter(view === "saved" ? Object.values(bookmarks) : events, {
+            hidePast,
+            sortBy,
+            categories,
+            dateFrom,
+            dateTo
+          });
+    // キーワードがあるときは一致した語数が多い順に並べ替える（関連度順）
+    return filterByKeyword(base, activeKeyword);
+  }, [view, showSearch, keyword, viewedEvents, bookmarks, events, hidePast, sortBy, categories, dateFrom, dateTo]);
   const visible = filtered.slice(0, visibleCount);
-  const calEvents = useMemo(() => {
-    const words = parseKeywords(keyword);
-    let list = words.length > 0 ? events.filter((e) => matchesKeyword(e, words)) : events;
-    if (categories.length) list = list.filter((e) => categories.includes(e.category ?? "その他"));
-    return list;
-  }, [events, categories, keyword]);
+  const calEvents = useMemo(
+    () => (categories.length ? events.filter((e) => categories.includes(e.category ?? "その他")) : events),
+    [events, categories]
+  );
   const calDayEvents = useMemo(
     () => (calDay ? calEvents.filter((e) => eventOnDay(e, calDay)) : []),
     [calEvents, calDay]
@@ -364,34 +373,36 @@ export function App() {
           </button>
         </div>
 
-        <form className="filterCard" onSubmit={handleSubmit} hidden={view === "saved" || view === "history"}>
-          <div className="field">
-            <label htmlFor="keywordInput"><Search size={14} /> キーワード</label>
-            <div className="searchBox">
-              <Search className="searchBoxIcon" size={16} aria-hidden="true" />
+        {showSearch && (
+          <div className="kwSearch">
+            <div className="kwSearchBar">
+              <Search size={18} aria-hidden="true" />
               <input
-                id="keywordInput"
                 type="search"
                 value={keyword}
                 onChange={(e) => changeKeyword(e.target.value)}
-                placeholder="イベント名・会場・内容で検索（例: 花火 松山）"
-                autoComplete="off"
-                enterKeyHint="search"
+                placeholder="イベント名・会場・内容で検索"
+                aria-label="キーワードで検索"
               />
-              {keyword !== "" && (
+              {trimmedKeyword && (
                 <button
                   type="button"
-                  className="searchClear"
+                  className="kwSearchClear"
                   onClick={() => changeKeyword("")}
                   aria-label="キーワードを消す"
                   title="キーワードを消す"
                 >
-                  <X size={16} />
+                  <X size={15} />
                 </button>
               )}
             </div>
-            <p className="fieldHint">スペースで区切ると、すべての語を含むイベントを探します。</p>
+            {trimmedKeyword && (
+              <p className="kwSearchHint">スペースで区切ると、どれかに当てはまるイベントを表示します。</p>
+            )}
           </div>
+        )}
+
+        <form className="filterCard" onSubmit={handleSubmit} hidden={view === "saved" || view === "history"}>
           <div className="filterRow">
             <label className="field">
               <span><MapPin size={14} /> 地域</span>
@@ -583,14 +594,23 @@ export function App() {
           {visible.map(renderEventCard)}
           {visible.length === 0 && (
             <div className="emptyState">
-              {view === "saved" ? <Bookmark size={34} /> : view === "history" ? <History size={34} /> : <Search size={34} />}
-              <p>
-                {view === "saved"
-                  ? "まだブックマークがありません。気になるイベントの🔖を押すとここに保存されます。"
-                  : view === "history"
-                    ? "まだ閲覧履歴がありません。イベントの「詳細 →」を開くとここに残ります。"
-                    : "該当するイベントがありません。"}
-              </p>
+              {trimmedKeyword ? <Search size={34} /> : view === "saved" ? <Bookmark size={34} /> : view === "history" ? <History size={34} /> : <Search size={34} />}
+              {trimmedKeyword ? (
+                <>
+                  <p>「{trimmedKeyword}」に一致するイベントが見つかりませんでした。</p>
+                  <button className="ghostButton" type="button" onClick={() => changeKeyword("")}>
+                    キーワードを解除して一覧に戻る
+                  </button>
+                </>
+              ) : (
+                <p>
+                  {view === "saved"
+                    ? "まだブックマークがありません。気になるイベントの🔖を押すとここに保存されます。"
+                    : view === "history"
+                      ? "まだ閲覧履歴がありません。イベントの「詳細 →」を開くとここに残ります。"
+                      : "該当するイベントがありません。"}
+                </p>
+              )}
             </div>
           )}
         </div>
@@ -628,14 +648,12 @@ export function App() {
 
 function sortAndFilter(
   events: EventItem[],
-  opts: { hidePast: boolean; sortBy: SortKey; categories: string[]; dateFrom?: string; dateTo?: string; keyword?: string }
+  opts: { hidePast: boolean; sortBy: SortKey; categories: string[]; dateFrom?: string; dateTo?: string }
 ): EventItem[] {
   const startOfToday = new Date();
   startOfToday.setHours(0, 0, 0, 0);
 
   let list = events;
-  const words = parseKeywords(opts.keyword ?? "");
-  if (words.length > 0) list = list.filter((e) => matchesKeyword(e, words));
   if (opts.categories.length > 0) list = list.filter((e) => opts.categories.includes(e.category ?? "その他"));
   if (opts.dateFrom || opts.dateTo) list = list.filter((e) => intersectsRange(e, opts.dateFrom ?? "", opts.dateTo ?? ""));
   if (opts.hidePast) {
@@ -654,49 +672,56 @@ function sortAndFilter(
   });
 }
 
-/**
- * 検索語の正規化。NFKC で全角英数字・半角カナのゆれを吸収し、小文字化して
- * 「ＡＢＣ / abc」「ｲﾍﾞﾝﾄ / イベント」を同じものとして扱えるようにする。
- */
-function normalizeText(value: string): string {
-  return value.normalize("NFKC").toLowerCase();
+/** 検索語の正規化。全角英数字を半角に寄せて小文字化し、「ＡＢＣ」を「abc」で引けるようにする。 */
+function normalizeKeywordText(value: string): string {
+  return value.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 65248)).toLowerCase();
 }
 
 /** 入力キーワードを空白（半角・全角どちらも）区切りの語に分解する */
 function parseKeywords(keyword: string): string[] {
-  return normalizeText(keyword).trim().split(/\s+/).filter(Boolean);
+  const normalized = normalizeKeywordText(keyword).trim();
+  return normalized ? normalized.split(/[\s\u3000]+/).filter(Boolean) : [];
 }
 
 // 検索対象テキストはイベントごとに一度だけ作って再利用する（1文字入力ごとの再計算を避ける）
 const haystackCache = new WeakMap<EventItem, string>();
 
-/** イベントの検索対象テキスト（タイトル・要約・会場・住所・地域・カテゴリ・関心タグ・情報源） */
-function searchHaystack(event: EventItem): string {
+/** イベントの検索対象テキスト（タイトル・要約・会場・住所・地域・カテゴリ） */
+function keywordHaystack(event: EventItem): string {
   const cached = haystackCache.get(event);
   if (cached !== undefined) return cached;
-  const built = normalizeText(
-    [
-      event.title,
-      event.summary,
-      event.venue,
-      event.address,
-      event.area,
-      event.category,
-      event.sourceName,
-      ...(event.interests ?? [])
-    ]
-      .filter(Boolean)
-      .join(" ")
+  const built = normalizeKeywordText(
+    [event.title, event.summary, event.venue, event.address, event.area, event.category].filter(Boolean).join(" ")
   );
   haystackCache.set(event, built);
   return built;
 }
 
-/** すべての語を含むイベントだけを通す（AND検索） */
-function matchesKeyword(event: EventItem, words: string[]): boolean {
-  if (words.length === 0) return true;
-  const haystack = searchHaystack(event);
-  return words.every((word) => haystack.includes(word));
+/** 何語に当てはまったかを数える。0 なら不一致。 */
+function keywordMatchCount(event: EventItem, words: string[]): number {
+  if (words.length === 0) return 0;
+  const haystack = keywordHaystack(event);
+  let count = 0;
+  for (const word of words) {
+    if (haystack.includes(word)) count++;
+  }
+  return count;
+}
+
+/**
+ * キーワードで絞り込む。どれか1語でも当てはまれば残す（OR検索）。
+ * 並び順は「当てはまった語数が多い順」→「元の並び順」で、関連度の高いものが上にくる。
+ */
+function filterByKeyword(events: EventItem[], keyword: string): EventItem[] {
+  const words = parseKeywords(keyword);
+  if (words.length === 0) return events;
+  const scored: Array<{ event: EventItem; count: number; index: number }> = [];
+  events.forEach((event, index) => {
+    const count = keywordMatchCount(event, words);
+    if (count > 0) scored.push({ event, count, index });
+  });
+  scored.sort((a, b) => b.count - a.count || a.index - b.index);
+  return scored.map((s) => s.event);
 }
 
 function dateValue(value: string | undefined, fallback: number): number {
