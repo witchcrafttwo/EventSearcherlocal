@@ -1,4 +1,4 @@
-import { ArrowUp, Bell, BellRing, Bookmark, BookmarkCheck, CalendarDays, ChevronDown, ChevronRight, History, Map as MapIcon, MapPin, Search, Sparkles, Trash2 } from "lucide-react";
+import { ArrowUp, Bell, BellRing, Bookmark, BookmarkCheck, CalendarDays, ChevronDown, ChevronRight, History, Map as MapIcon, MapPin, Search, Sparkles, Trash2, X } from "lucide-react";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { fetchAreas, hasApiConfig, searchEvents, type EventItem } from "./api";
 import { categoryColor } from "./categoryColors";
@@ -37,6 +37,8 @@ function loadBookmarks(): Record<string, EventItem> {
 
 export function App() {
   const [area, setArea] = useState(() => localStorage.getItem(AREA_KEY) ?? "");
+  // フリーワード検索。入力するたびに手元のイベントを即座に絞り込む（APIの再取得はしない）
+  const [keyword, setKeyword] = useState("");
   const [categories, setCategories] = useState<string[]>([]);
   const [events, setEvents] = useState<EventItem[]>([]);
   const [status, setStatus] = useState("地域やカテゴリを選んで検索できます。");
@@ -85,13 +87,15 @@ export function App() {
         : viewedEvents;
     }
     const baseList = view === "saved" ? Object.values(bookmarks) : events;
-    return sortAndFilter(baseList, { hidePast, sortBy, categories, dateFrom, dateTo });
-  }, [view, viewedEvents, bookmarks, events, hidePast, sortBy, categories, dateFrom, dateTo]);
+    return sortAndFilter(baseList, { hidePast, sortBy, categories, dateFrom, dateTo, keyword });
+  }, [view, viewedEvents, bookmarks, events, hidePast, sortBy, categories, dateFrom, dateTo, keyword]);
   const visible = filtered.slice(0, visibleCount);
-  const calEvents = useMemo(
-    () => (categories.length ? events.filter((e) => categories.includes(e.category ?? "その他")) : events),
-    [events, categories]
-  );
+  const calEvents = useMemo(() => {
+    const words = parseKeywords(keyword);
+    let list = words.length > 0 ? events.filter((e) => matchesKeyword(e, words)) : events;
+    if (categories.length) list = list.filter((e) => categories.includes(e.category ?? "その他"));
+    return list;
+  }, [events, categories, keyword]);
   const calDayEvents = useMemo(
     () => (calDay ? calEvents.filter((e) => eventOnDay(e, calDay)) : []),
     [calEvents, calDay]
@@ -206,6 +210,11 @@ export function App() {
     setCategories((prev) => (prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]));
   }
 
+  function changeKeyword(value: string) {
+    setVisibleCount(PAGE_SIZE);
+    setKeyword(value);
+  }
+
   function toggleCat(category: string) {
     setOpenCats((prev) => {
       const next = new Set(prev);
@@ -266,6 +275,7 @@ export function App() {
 
   function handleReset() {
     setArea("");
+    setKeyword("");
     setCategories([]);
     setSortBy("dateAsc");
     setVisibleCount(PAGE_SIZE);
@@ -355,6 +365,33 @@ export function App() {
         </div>
 
         <form className="filterCard" onSubmit={handleSubmit} hidden={view === "saved" || view === "history"}>
+          <div className="field">
+            <label htmlFor="keywordInput"><Search size={14} /> キーワード</label>
+            <div className="searchBox">
+              <Search className="searchBoxIcon" size={16} aria-hidden="true" />
+              <input
+                id="keywordInput"
+                type="search"
+                value={keyword}
+                onChange={(e) => changeKeyword(e.target.value)}
+                placeholder="イベント名・会場・内容で検索（例: 花火 松山）"
+                autoComplete="off"
+                enterKeyHint="search"
+              />
+              {keyword !== "" && (
+                <button
+                  type="button"
+                  className="searchClear"
+                  onClick={() => changeKeyword("")}
+                  aria-label="キーワードを消す"
+                  title="キーワードを消す"
+                >
+                  <X size={16} />
+                </button>
+              )}
+            </div>
+            <p className="fieldHint">スペースで区切ると、すべての語を含むイベントを探します。</p>
+          </div>
           <div className="filterRow">
             <label className="field">
               <span><MapPin size={14} /> 地域</span>
@@ -591,12 +628,14 @@ export function App() {
 
 function sortAndFilter(
   events: EventItem[],
-  opts: { hidePast: boolean; sortBy: SortKey; categories: string[]; dateFrom?: string; dateTo?: string }
+  opts: { hidePast: boolean; sortBy: SortKey; categories: string[]; dateFrom?: string; dateTo?: string; keyword?: string }
 ): EventItem[] {
   const startOfToday = new Date();
   startOfToday.setHours(0, 0, 0, 0);
 
   let list = events;
+  const words = parseKeywords(opts.keyword ?? "");
+  if (words.length > 0) list = list.filter((e) => matchesKeyword(e, words));
   if (opts.categories.length > 0) list = list.filter((e) => opts.categories.includes(e.category ?? "その他"));
   if (opts.dateFrom || opts.dateTo) list = list.filter((e) => intersectsRange(e, opts.dateFrom ?? "", opts.dateTo ?? ""));
   if (opts.hidePast) {
@@ -613,6 +652,51 @@ function sortAndFilter(
     if (opts.sortBy === "dateDesc") return dateValue(b.eventDate, 0) - dateValue(a.eventDate, 0);
     return dateValue(a.eventDate, Infinity) - dateValue(b.eventDate, Infinity); // dateAsc
   });
+}
+
+/**
+ * 検索語の正規化。NFKC で全角英数字・半角カナのゆれを吸収し、小文字化して
+ * 「ＡＢＣ / abc」「ｲﾍﾞﾝﾄ / イベント」を同じものとして扱えるようにする。
+ */
+function normalizeText(value: string): string {
+  return value.normalize("NFKC").toLowerCase();
+}
+
+/** 入力キーワードを空白（半角・全角どちらも）区切りの語に分解する */
+function parseKeywords(keyword: string): string[] {
+  return normalizeText(keyword).trim().split(/\s+/).filter(Boolean);
+}
+
+// 検索対象テキストはイベントごとに一度だけ作って再利用する（1文字入力ごとの再計算を避ける）
+const haystackCache = new WeakMap<EventItem, string>();
+
+/** イベントの検索対象テキスト（タイトル・要約・会場・住所・地域・カテゴリ・関心タグ・情報源） */
+function searchHaystack(event: EventItem): string {
+  const cached = haystackCache.get(event);
+  if (cached !== undefined) return cached;
+  const built = normalizeText(
+    [
+      event.title,
+      event.summary,
+      event.venue,
+      event.address,
+      event.area,
+      event.category,
+      event.sourceName,
+      ...(event.interests ?? [])
+    ]
+      .filter(Boolean)
+      .join(" ")
+  );
+  haystackCache.set(event, built);
+  return built;
+}
+
+/** すべての語を含むイベントだけを通す（AND検索） */
+function matchesKeyword(event: EventItem, words: string[]): boolean {
+  if (words.length === 0) return true;
+  const haystack = searchHaystack(event);
+  return words.every((word) => haystack.includes(word));
 }
 
 function dateValue(value: string | undefined, fallback: number): number {
