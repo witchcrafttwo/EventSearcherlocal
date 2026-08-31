@@ -1,6 +1,7 @@
 @echo off
-REM ãˆã²ã‚ã‚¤ãƒ™ãƒ³ãƒˆãƒŠãƒ“ PCã‚µãƒ¼ãƒãƒ¼èµ·å‹•ç”¨ï¼ˆãƒ€ãƒ–ãƒ«ã‚¯ãƒªãƒƒã‚¯ã§OKï¼‰
-REM ã“ã®ãƒãƒƒãƒã¨åŒã˜ãƒ•ã‚©ãƒ«ãƒ€ã§å®Ÿè¡Œã•ã‚Œã‚‹ã€‚
+REM ‚¦‚Ğ‚ßƒCƒxƒ“ƒgƒiƒr PCƒT[ƒo[‹N“®—piƒ_ƒuƒ‹ƒNƒŠƒbƒN‚ÅOKj
+REM ‚±‚Ìƒoƒbƒ`‚Æ“¯‚¶ƒtƒHƒ‹ƒ_‚ÅÀs‚³‚ê‚éB
+REM •¶šƒR[ƒh‚ÍCP932(Shift-JIS)‚Å•Û‘¶‚·‚é‚±‚ÆBUTF-8‚É‚·‚é‚Æ•\¦‚ª‰»‚¯‚éB
 
 cd /d "%~dp0"
 
@@ -8,21 +9,53 @@ echo ============================================
 echo   prefecture-events-ai  PC server
 echo ============================================
 
-REM ä¾å­˜ãŒæœªã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ãªã‚‰å…¥ã‚Œã‚‹
+REM ˆË‘¶‚ª–¢ƒCƒ“ƒXƒg[ƒ‹‚È‚ç“ü‚ê‚é
 if not exist "node_modules" (
   echo [setup] installing dependencies...
   call npm install
+  if errorlevel 1 goto installfailed
 )
 
-REM ãƒ•ãƒ­ãƒ³ãƒˆ(dist)ãŒç„¡ã‘ã‚Œã°ãƒ“ãƒ«ãƒ‰
-if not exist "packages\web\dist\index.html" (
+REM ƒtƒƒ“ƒg‚Í–¢ƒrƒ‹ƒh‚©Aƒ\[ƒX‚ªdist‚æ‚èV‚µ‚¢‚Æ‚«‚¾‚¯ƒrƒ‹ƒh‚·‚éB
+REM ”»’è‚Í scripts\web-build-needed.ps1 ‚ªs‚¢A•K—v‚È‚çI—¹ƒR[ƒh1‚ğ•Ô‚·B
+REM •ÏX‚ª–³‚¯‚ê‚Îƒrƒ‹ƒh‚ğ”ò‚Î‚·‚Ì‚Å‹N“®‚ª‘¬‚¢B
+set NEEDBUILD=0
+powershell -NoProfile -ExecutionPolicy Bypass -File "scripts\web-build-needed.ps1"
+if errorlevel 1 set NEEDBUILD=1
+
+if "%NEEDBUILD%"=="1" (
   echo [build] building frontend...
   call npm run web:build
+  if errorlevel 1 goto buildfailed
+  for %%F in ("packages\web\dist\index.html") do echo [build] done: %%~tF
 )
 
+:launch
 echo [start] launching server...
 call npm run start
 
 echo.
-echo ã‚µãƒ¼ãƒãƒ¼ãŒçµ‚äº†ã—ã¾ã—ãŸã€‚ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’é–‰ã˜ã‚‹ã‹ã€å†å®Ÿè¡Œã—ã¦ãã ã•ã„ã€‚
+echo ƒT[ƒo[‚ªI—¹‚µ‚Ü‚µ‚½BƒEƒBƒ“ƒhƒE‚ğ•Â‚¶‚é‚©AÄÀs‚µ‚Ä‚­‚¾‚³‚¢B
 pause
+exit /b 0
+
+:buildfailed
+echo.
+echo [error] ƒrƒ‹ƒh‚É¸”s‚µ‚Ü‚µ‚½Bã‚ÌƒGƒ‰[‚ğŠm”F‚µ‚Ä‚­‚¾‚³‚¢B
+if exist "packages\web\dist\index.html" (
+  echo [warn] ‘O‰ñ‚Ìƒrƒ‹ƒhŒ‹‰Ê‚Ì‚Ü‚Ü‹N“®‚µ‚Ü‚·B‰æ–Ê‚ÍŒÃ‚¢“à—e‚Å‚·B
+  echo [warn] ’¼‚µ‚½‚çA‚±‚Ìƒoƒbƒ`‚ğÄÀs‚µ‚Ä‚­‚¾‚³‚¢B
+  echo.
+  goto launch
+)
+echo [error] ”zM‚Å‚«‚édist‚ª‚ ‚è‚Ü‚¹‚ñBƒrƒ‹ƒh‚ğ’¼‚µ‚Ä‚©‚çÄÀs‚µ‚Ä‚­‚¾‚³‚¢B
+echo.
+pause
+exit /b 1
+
+:installfailed
+echo.
+echo [error] npm install ‚É¸”s‚µ‚Ü‚µ‚½Bƒlƒbƒgƒ[ƒN‚ÆNode.js‚Ìó‘Ô‚ğŠm”F‚µ‚Ä‚­‚¾‚³‚¢B
+echo.
+pause
+exit /b 1
