@@ -1,0 +1,32 @@
+# workerサーバーを Docker で動かす構成（Windows の Docker Desktop 向け）。
+# DB はサーバーに入っている既存の PostgreSQL を使う。
+#
+# 使い方（サーバー上のリポジトリ直下で実行）:
+#   docker compose -f docker/compose.yaml up -d --build   # ビルドして起動
+#   docker compose -f docker/compose.yaml logs -f app     # ログを見る
+#   docker compose -f docker/compose.yaml down            # 停止
+# ブラウザ: http://<サーバーのIP>:1616 （ホスト側のポートは環境変数 APP_PORT で変更可）
+#
+# 設定は packages/worker/.env をそのまま読む。
+# コンテナの中の localhost はコンテナ自身を指すので、.env の DATABASE_URL のホストは
+# localhost ではなく host.docker.internal（Docker Desktop が用意するホストPCの名前）にする。
+#   例: DATABASE_URL=postgres://ユーザー:パスワード@host.docker.internal:5432/DB名
+
+name: prefecture-events-ai
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: prefecture-events-ai-server:local
+    init: true
+    restart: unless-stopped
+    env_file:
+      - ../packages/worker/.env
+    environment:
+      # コンテナ内の配置に合わせて固定する（.env の値がホスト用でも動くように）
+      PORT: "8787"
+      WEB_DIST: ../web/dist
+    ports:
+      - "${APP_PORT:-1616}:8787"

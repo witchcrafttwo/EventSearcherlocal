@@ -1,0 +1,16 @@
+# docker/Dockerfile 専用の除外設定（BuildKit が Dockerfile と同じ場所のこのファイルを自動で使う）。
+# 秘密情報と生成物をビルドコンテキストに入れない。
+**/node_modules
+**/dist
+**/cdk.out
+**/.wrangler
+**/.vercel
+.git
+.kiro
+.vscode
+**/.env
+**/.env.*
+**/.dev.vars
+**/*.log
+*.pptx
+*.xlsx
