@@ -28,11 +28,20 @@ async function main() {
   const onlySource = argValue("--source");
 
   // 必須env確認
-  for (const key of ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_REGION", "EVENTS_TABLE", "SOURCES_TABLE", "BEDROCK_MODEL_ID"]) {
+  for (const key of ["AWS_REGION", "EVENTS_TABLE", "SOURCES_TABLE", "BEDROCK_MODEL_ID"]) {
     if (!process.env[key]) {
       console.error(`[ingest] 環境変数 ${key} が未設定です。packages/worker/.dev.vars を確認してください。`);
       process.exit(1);
     }
+  }
+  // Bedrock の認証は API キーか IAM キーのどちらか一方があればよい
+  const hasApiKey = Boolean(process.env.AWS_BEARER_TOKEN_BEDROCK);
+  const hasIamKeys = Boolean(process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY);
+  if (!hasApiKey && !hasIamKeys) {
+    console.error(
+      "[ingest] Bedrock の認証情報が未設定です。AWS_BEARER_TOKEN_BEDROCK（APIキー）か AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY を設定してください。"
+    );
+    process.exit(1);
   }
 
   const all = await loadAllSources(env);

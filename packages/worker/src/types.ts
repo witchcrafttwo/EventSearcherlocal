@@ -85,6 +85,7 @@ export type Env = {
   AI_PROVIDER?: string;
   BEDROCK_MODEL_ID: string;
   BEDROCK_REGION?: string; // Bedrock呼び出し専用リージョン（未指定ならAWS_REGION）
+  AWS_BEARER_TOKEN_BEDROCK?: string; // secret。Bedrock API キー。設定すると IAM キーより優先して Bearer 認証で呼ぶ
   // --- OpenAI互換の外部LLM（GLM / DeepSeek / OpenAI など）。AI_PROVIDER=openai のとき使用 ---
   LLM_BASE_URL?: string; // 例: https://api.z.ai/api/paas/v4
   LLM_API_KEY?: string; // secret

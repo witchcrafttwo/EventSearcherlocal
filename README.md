@@ -94,7 +94,8 @@ DynamoDB テーブル（すべて ap-northeast-1）:
 | 変数 | 説明 |
 |---|---|
 | `AWS_REGION` | 例: `ap-northeast-1` |
-| `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` | DynamoDB/Bedrock 用のIAM認証（最小権限推奨） |
+| `AWS_BEARER_TOKEN_BEDROCK` | Bedrock API キー。設定すると下の IAM キーより優先して使う |
+| `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` | API キーを使わない場合の Bedrock 用 IAM 認証。AgentCore Web Search はこちらが必須（最小権限推奨） |
 | `PROFILES_TABLE` / `EVENTS_TABLE` / `SUBSCRIPTIONS_TABLE` / `SOURCES_TABLE` | DynamoDBテーブル名 |
 | `BEDROCK_MODEL_ID` | 例: `zai.glm-5` |
 
